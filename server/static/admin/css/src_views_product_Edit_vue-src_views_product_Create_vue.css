@@ -1,0 +1,26 @@
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/views/product/Create.vue?vue&type=style&index=0&id=649c9cd6&lang=scss&scoped=true& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************/
+[data-v-649c9cd6] .el-form {
+  margin-left: 100px;
+  width: 800px;
+}
+[data-v-649c9cd6] .el-form .el-col-offset-2 {
+  height: 40px;
+}
+[data-v-649c9cd6] .el-form .el-rate {
+  padding: 10px 0;
+}
+[data-v-649c9cd6] .el-form .uploadPrompt {
+  margin-left: 10px;
+}
+.pC[data-v-649c9cd6] {
+  padding: 30px;
+  background-color: white;
+}
+.pC h1[data-v-649c9cd6] {
+  margin: 25px 0;
+  padding: 25px 0;
+  border-bottom: 2px solid #e2e2e2;
+  font-size: 30px;
+}

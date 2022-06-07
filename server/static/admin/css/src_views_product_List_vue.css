@@ -1,0 +1,52 @@
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/views/product/List.vue?vue&type=style&index=0&id=2079f3f8&scoped=true&lang=scss& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************/
+.page-product-lsit[data-v-2079f3f8] {
+  padding: 30px;
+  background-color: white;
+}
+.page-product-lsit .list-btns[data-v-2079f3f8] {
+  text-align: center;
+}
+.page-product-lsit .list-btns[data-v-2079f3f8]  .el-button {
+  margin-left: 20px;
+}
+.page-product-lsit h1[data-v-2079f3f8] {
+  margin: 25px 0;
+  padding: 25px 0;
+  border-bottom: 2px solid #e2e2e2;
+  font-size: 30px;
+}
+.products[data-v-2079f3f8] {
+  margin: 0 25px;
+  margin-bottom: 30px;
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-template-columns: repeat(5, auto);
+  grid-gap: 10px 20px;
+}
+.products[data-v-2079f3f8]  .title {
+  text-align: center;
+  margin: 8px auto;
+  width: 80%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.products[data-v-2079f3f8]  .center {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: 1fr;
+  font-size: 12px;
+}
+.products[data-v-2079f3f8]  .center span:first-of-type {
+  place-self: start;
+  color: red;
+}
+.products[data-v-2079f3f8]  .center span:last-of-type {
+  place-self: end;
+}
+.products[data-v-2079f3f8]  .sales {
+  margin: 5px 0;
+  font-size: 15px;
+}

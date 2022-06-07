@@ -1,0 +1,21 @@
+// nva背景颜色
+$navColor:#06c1ae;
+// 左右字体大小
+$nav_font_size:1rem;
+// 中间h1标签大小
+$nav_center_size:1.5rem;
+
+// header的高度
+$nav_height: 4rem;
+
+
+// 箭头的混合
+
+@mixin  arrow($w:20px,$c:#000,$dir:top,$arg...) {
+      
+    width: 0;
+    font-size: 0;
+    border: $w solid transparent;
+    border-#{$dir}:  $w solid $c;
+
+}
