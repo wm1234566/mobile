@@ -154,8 +154,8 @@ export default {
       let { params } = this.$route;
 
       console.log("当前页面路由", this.$route);
-      this.$http
-        .get("/admin/product/list", {
+      
+        $http.get("/admin/product/list", {
           // 第一个参数是一个对象传递query数据
           params,
         })
@@ -185,7 +185,7 @@ export default {
         type: "error",
       })
         .then(() => {
-          this.$http.post("/admin/product/remove", { id: item.id }).then(
+          $http.post("/admin/product/remove", { id: item.id }).then(
             ({ data }) => {
               if (data.code == 1) {
                 console.log("删除id", data.msg);

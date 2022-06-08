@@ -1,6 +1,6 @@
 <template>
   <div class="pC">
-    <h1>{{title}}</h1>
+    <h1>{{ title }}</h1>
 
     <el-form
       :model="data"
@@ -21,7 +21,11 @@
       </el-form-item>
 
       <el-form-item label="商品价格" prop="price" required>
-        <el-input v-model.number="data.price" type="number" placeholder="请输入商品价格"></el-input>
+        <el-input
+          v-model.number="data.price"
+          type="number"
+          placeholder="请输入商品价格"
+        ></el-input>
       </el-form-item>
       <el-form-item label="商品原价" prop="originPrice" required>
         <el-input
@@ -47,7 +51,11 @@
       </el-form-item>
 
       <el-form-item label="商品销量" prop="sales" required>
-        <el-input v-model.number="data.sales" type="number" placeholder="请输入商品销量"></el-input>
+        <el-input
+          v-model.number="data.sales"
+          type="number"
+          placeholder="请输入商品销量"
+        ></el-input>
       </el-form-item>
       <el-form-item label="商品店名" prop="storeName" required>
         <el-input
@@ -73,6 +81,7 @@
         <el-upload
           action="/admin/product/upload"
           :data="uploadParams"
+          :headers="token"
           :on-success="uploadSuccess"
           :on-error="uploadError"
           :on-preview="handlePreview"
@@ -143,8 +152,7 @@ import { types } from "@/tools/config";
 
 export default {
   data() {
-
-    let  rules={};
+    let rules = {};
     // let  pass=function (item,f,value,cb)
     // {
     //   if(value<0)
@@ -153,21 +161,32 @@ export default {
     //   }
     //   cb()
     // }
-    let array=[ "title", "description", "sales", "price", "originPrice", "evaluate", "storeName", "storeAddress", "storeNum"].map((item)=>{
-      rules[item]=[{required:true,message:`${item}不为空`}]
-    })
+    let array = [
+      "title",
+      "description",
+      "sales",
+      "price",
+      "originPrice",
+      "evaluate",
+      "storeName",
+      "storeAddress",
+      "storeNum",
+    ].map((item) => {
+      rules[item] = [{ required: true, message: `${item}不为空` }];
+    });
     return {
+      title: "添加商品",
+      submitUrl: "/admin/product/create", //数据提交的地址
 
-      title:"添加商品",
-      submitUrl:"/admin/product/create",//数据提交的地址
-
-      uploadParams:{id:"",type:1},
+      uploadParams: { id: "", type: 1 },
       // type:1表示商品的图片
       // type:2表示用户头像
       types,
+      // token
+      token: { Authorization: "Bearer " + localStorage.getItem("token") || "" },
 
       data: {
-        id:"",
+        id: "",
         type: 1,
         img: "",
         title: "",
@@ -179,44 +198,35 @@ export default {
         storeName: 0,
         storeAddress: "",
         storeNum: 0,
-
       },
       // 上传的预览文件
       fileList: [],
-      rules
-
-    }
+      rules,
+    };
   },
 
   methods: {
     submitForm(ref) {
       this.$refs[ref].validate((valid) => {
         if (valid) {
-
-// 上传发送的数据是
-          console.log("创建商品发送的数据是",this.data);
-          this.$http.post(this.submitUrl, this.data).then(
+          // 上传发送的数据是
+          console.log("创建商品发送的数据是", this.data);
+          $http.post(this.submitUrl, this.data).then(
             ({ data }) => {
               console.log("创建商品得到的数据结果是", data);
               if (data.code === 1) {
+                console.log("返回的id", data);
 
-
-                console.log("返回的id",data)
-
-                this.$set(this.uploadParams,"id",data.data)
+                this.$set(this.uploadParams, "id", data.data);
 
                 this.$refs["upload"].submit();
 
                 this.$message.success("添加成功");
-                setTimeout(()=>{
-
+                setTimeout(() => {
                   // 刷新
-                this.$router.go(0)
-
-                },1000)
-              }
-              else
-              {
+                  this.$router.go(0);
+                }, 1000);
+              } else {
                 this.$message.error(data.msg);
               }
             },
@@ -233,8 +243,6 @@ export default {
 
     // 上传成功
     uploadSuccess(response, file, fileList) {
-
-
       console.log("上传图片成功的到的数据是", response, file, fileList);
     },
     // 上传失败

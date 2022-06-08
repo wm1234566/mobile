@@ -308,6 +308,7 @@ function list(req, res) {
         code: 0,
         data: error,
       });
+      return 
     } else {
       //   console.log("查询成功", data);
 
@@ -316,6 +317,7 @@ function list(req, res) {
         code: 1,
         data: data,
       });
+      return
     }
   });
 }

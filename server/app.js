@@ -6,68 +6,12 @@ let app = express();
 const root = process.cwd();
 
 const cookie = require("cookie-parser");
-const session = require("express-session");
+// const session = require("express-session");
 app.use(cookie("session"));
 //引入post请求处理的中间件
 
 const bodyParser = require("body-parser");
-app.use(
-  session({
-    // 保存未初始化的session
-    saveUninitialized: true,
-    secret: "ergwe", //拼接字符串
-    resave: false,
-    rolling: true, //是否在用户每次请求时重置cookie(connect.sid)的生存时间
-    cookie: {
-      secure: false, // 必须设为fals不然拿不到session
-      maxAge: 100 * 60 * 60,
-    },
-  })
-);
 
-//生成token
-const jwt = require("jsonwebtoken");
-
-// 自定义秘钥
-const secretkey = "ananan";
-// 引入解码工具
-const { expressjwt } = require("express-jwt");
-//只要配置express-jwt这个中间件，就可以把解析出来的信息挂载在req.auth
-//除了api开头的请求地址其他地址都需要验证
-app.use(
-  expressjwt({
-    credentialsRequired: true, //需要校验
-    secret: secretkey, // 加密秘钥
-    algorithms: ["HS256"], // 加密方式
-  }).unless({
-    path: ["/admin", "/login", /^\/static/, "/captcha"], // 不需要校验的路径
-    // path: ["/admin","/login"/^(\/admin|\/|\/login)/],
-  })
-);
-
-//定义一个抛出错误的中间件 当token失效时 返回信息
-app.use((err, req, res, next) => {
-  if (err.name === "UnauthorizedError") {
-    return res.json({ code: 0, msg: "无效的token" });
-  }
-  // res.send({ status: 500, message: "未知错误" });
-  return res.json({ code: 0, msg: "出现未知错误" });
-});
-
-// 使用中间件
-// app.use(
-//   bodyParser.urlencoded({
-//     extended: true, //为false的时候，键值对中的值就为'String'或'Array'形式，true 为任意类型
-//   })
-// );
-
-// 配置body-parser
-// 只要加入这个配置，则在req请求对象上会多出来一个属性：body
-// 也就是说可以直接通过req.body来获取表单post请求数据
-// parse application/x-www-form-urlencoded
-// app.use(bodyParser.urlencoded({ extended: false }))
-
-// parse application/json
 app.use(bodyParser.json());
 
 app.use(
@@ -76,16 +20,39 @@ app.use(
   })
 );
 
-app.use("/admin/product/*", function (req, res, next) {
-  // 提交数据验证是否登陆
-  if (req.session.username) {
-    // console.log("提交服务接受的的数据", req.body);
+// 导入token
+let {
+  getToken,
+  setToken,
+  decodeToken,
+  errorToken,
+} = require("./utility/token");
 
-    next();
-  } else {
-    res.json({ error: 0, msg: "你没有登陆", data: "" });
-  }
-});
+let { sessionInit } = require("./utility/session");
+
+// 配置session
+app.use(sessionInit);
+
+// 解析toke
+app.use(decodeToken);
+// 处理错误
+// 错误中间件写在最后
+app.use(errorToken);
+
+// 跨域
+let cors = require("./utility/cors");
+app.use("*", cors);
+
+// 验证登陆利用token
+
+// app.use("/admin/*", function (req, res, next) {
+//   if (getToken(req.headers["authorization"].split(" ")[1])) {
+//     console.log("登陆了", getToken(req.get("Authorization")));
+//     next();
+//   } else {
+//     res.json({ error: 0, msg: "你没有登陆", data: "" });
+//   }
+// });
 
 // 引入路由
 let router = require("./router/index");

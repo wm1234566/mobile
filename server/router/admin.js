@@ -1,5 +1,6 @@
 let router = require("./base");
 const query = require("../db/dataBaseConfigure");
+const token = require("../utility/token");
 
 // 生成jwt
 const jwt = require("jsonwebtoken");
@@ -30,6 +31,7 @@ function login(req, res) {
   // console.log("登陆数据",req.body)
 
   if (req.body.password && req.body.password) {
+    // 将明文密码加密
     let password = require("crypto")
       .createHash("sha1")
       .update(req.body.password)
@@ -55,35 +57,23 @@ function login(req, res) {
           if (results.length >= 1) {
             //  console.log("查询成功",results)
             // 如果登陆成功,在session中写入用户id
-            req.session.username = req.body.username;
+            // req.session.username = req.body.username;
 
-            // 发过来的to
-            try {
-              console.log(req.auth);
-            } catch (e) {}
+            // token.setToken("你好", "idxxxxx", "10h"); //
 
-            const secretkey = "ananan";
-            // 创建token
-            const tokentstr = jwt.sign(
-              { username: req.body.username }, // 添加的数据
-              secretkey, // 加密秘钥
-              {
-                expiresIn: "460s", // 存活时间
-              }
+            console.log(
+              "发送的token",
+              token.setToken("你好", "idxxxxx", "10h")
             );
-            // res.send({
-            //     status:200,
-            //     msg:'post请求成功',
-            //     data:userinfo,
-            //     token:tokentstr
-            // })
-            console.log(tokentstr);
-
             res.json({
               code: 1,
               msg: "登陆成功",
-              data: results[0],
-              token: tokentstr,
+              data: results[0].username,
+              token: token.setToken(
+                results[0].username,
+                results[0].id,
+                "3600s"
+              ), // 设置头
             });
           } else {
             res.json({
@@ -116,19 +106,39 @@ function changPassword(req, res, next) {
 // 验证登陆
 function isLogin(req, res, next) {
   // console.log("验证是否登陆",req.session.username)
-  // console.log("验证是否登陆")
-  if (req.session.username) {
-    // 有登陆过
-    res.json({
-      error: 0,
-      username: req.session.username,
-    });
-  } else {
+
+  // console.log(
+  //   "登陆结果",
+  //   req.headers["authorization"],
+  //   token.getToken(req.headers["authorization"].split(" ")[1])
+  // );
+  try {
+    if (token.getToken(req.headers["authorization"].split(" ")[1])) {
+      // 有登陆过
+      res.json({
+        code: 1,
+        data: {
+          username: token.getToken(req.headers["authorization"].split(" ")[1])
+            .user_name,
+        },
+        msg: "已经登陆",
+      });
+    } else {
+      // 没登陆过
+      res.json({
+        code: 0,
+        data: null,
+        msg: "未登录",
+      });
+    }
+  } catch (e) {
     // 没登陆过
     res.json({
-      error: 1,
-      username: "",
+      code: 0,
+      data: null,
+      msg: "未登录",
     });
+    return;
   }
 }
 
@@ -138,6 +148,6 @@ router.post("/login", login);
 
 router.get("/captcha", captcha);
 // router.post("/captcha", captcha);
-router.post("/admin/userinfo", isLogin);
+router.post("/userinfo", isLogin);
 
 module.exports = router;

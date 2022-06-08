@@ -4,7 +4,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 
 // store不是组件不能继承axios
-import axios from "axios";
+// import axios from "axios";
 
 // 引入ui
 import { Message } from "element-ui";
@@ -27,12 +27,14 @@ export default new Vuex.Store({
   actions: {
     login(store, data) {
       // 发送请求
-      axios.post("/login", data).then(
+      $http.post("/login", data).then(
         ({ data }) => {
           console.log("返回数据", data);
           if (data.code == 1) {
             //存储数据
-            store.commit("updateUserName", data.data.username);
+            store.commit("updateUserName", data.data);
+            // 如果登陆成功，存储token
+            // localStorage.setItem("token", data.token);
           } else {
             Message({
               message: data.msg,
@@ -46,20 +48,17 @@ export default new Vuex.Store({
       );
     },
     userInfo(store) {
-      axios.post("/admin/userinfo").then(
+      $http.post("/userinfo").then(
         ({ data }) => {
-
-
           // 存储用户信息
-          if (data.error === 0) {
-            store.commit("updateUserName", data.username);
-          }else
-          {
+          if (data.code === 1) {
+            store.commit("updateUserName", data.data.username);
+          } else {
             store.commit("updateUserName", "");
           }
         },
         (err) => {
-          console.log(err)
+          console.log(err);
         }
       );
     },

@@ -54,7 +54,6 @@
   </div>
 </template>
 <style lang="scss" scoped>
-
 ::v-deep .el-form {
   margin-left: 100px;
   width: 600px;
@@ -75,8 +74,7 @@
 </style>
 
 <script>
-
-import { repeat,username,password,captcha} from "../tools/validator";
+import { repeat, username, password, captcha } from "../tools/validator";
 export default {
   data() {
     return {
@@ -88,7 +86,6 @@ export default {
         captcha: "",
       },
       rules: {
-
         username: [
           { required: true, message: "名字不为空", trigger: "blur" },
           { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
@@ -97,16 +94,26 @@ export default {
 
         password: [
           { required: true, message: "密码不为空", trigger: "blur" },
-          { min: 8, max: 12, message: "长度在 8 到 12 个字符", trigger: "blur" },
-          { validator: password, trigger: "blur" }],
+          {
+            min: 8,
+            max: 12,
+            message: "长度在 8 到 12 个字符",
+            trigger: "blur",
+          },
+          { validator: password, trigger: "blur" },
+        ],
 
         repeat: [
-
           { required: true, message: "重复密码不为空", trigger: "blur" },
-          { min: 8, max: 12, message: "长度在 8 到 12 个字符", trigger: "blur" },
+          {
+            min: 8,
+            max: 12,
+            message: "长度在 8 到 12 个字符",
+            trigger: "blur",
+          },
           {
             validator: (...args) => {
-              repeat(this.ruleForm.password,"名字", args);
+              repeat(this.ruleForm.password, "名字", args);
             },
             trigger: "blur",
           },
@@ -114,7 +121,8 @@ export default {
         captcha: [
           { required: true, message: "验证码不为空", trigger: "blur" },
           { min: 4, max: 4, message: "长度4个字符", trigger: "blur" },
-            { validator: captcha, trigger: "blur" }],
+          { validator: captcha, trigger: "blur" },
+        ],
       },
     };
   },
@@ -125,39 +133,29 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          $http.post("/chpwd", this.ruleForm).then(
+            ({ data }) => {
+              console.log("结果是", data);
+              if (data.error === 0) {
+                this.$message.success("修改密成功,请重新登录");
 
-          this.$http.post("/chpwd",this.ruleForm)
-          .then(
-              ({data})=>{
-                console.log("结果是",data)
-                if(data.error === 0)
-                {
+                // 刷新页面  原生刷新页面
+                location.reload(); //
+                // history.go(0)
+                //this.$router.go(0);
 
-                  this.$message.success("修改密成功,请重新登录")
-
-                   // 刷新页面  原生刷新页面
-                  location.reload();//
-                  // history.go(0)
-                  //this.$router.go(0);
-
-                  // 退出登陆
-                  // setTimeout(()=>{
-                  //   this.$store.commit("updateUserName","")
-                  // },2000)
-
-                }
-
-              },
-              (err)=>{
-                this.$message.error('请求错误');
-
-
+                // 退出登陆
+                // setTimeout(()=>{
+                //   this.$store.commit("updateUserName","")
+                // },2000)
               }
-          )
-
-
+            },
+            (err) => {
+              this.$message.error("请求错误");
+            }
+          );
         } else {
-          this.$message.error('请输入合法的数据');
+          this.$message.error("请输入合法的数据");
           return false;
         }
       });
